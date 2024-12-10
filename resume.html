@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Resume</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <div id="resume-container">
+      <div class="left-section">
+        <div
+          class="profile-picture"
+          onclick="document.getElementById('file-input').click()"
+        >
+          <img
+            id="profile-image"
+            src="profile-placeholder.jpg"
+            alt="select Profile Image"
+          />
+        </div>
+        <input
+          type="file"
+          id="file-input"
+          accept="image/*"
+          style="display: none"
+          onchange="loadImage(event)"
+        />
+
+        <h2 id="display-name"></h2>
+        <h2 id="display-role"></h2>
+        <div class="contact">
+          <h3><i class="fas fa-phone-alt"></i> Contact</h3>
+          <p>
+            <i class="fas fa-envelope"></i> <span id="display-email"></span>
+          </p>
+          <p>
+            <i class="fas fa-phone-alt"></i> <span id="display-phone"></span>
+          </p>
+          <p>
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="display-location"></span>
+          </p>
+        </div>
+        <div class="skills">
+          <h3><i class="fas fa-code"></i> Skills</h3>
+          <ul id="skills-list"></ul>
+          <button id="toggle-skills">Hide Skills</button>
+        </div>
+        <div class="languages">
+          <h3><i class="fas fa-globe"></i> Languages</h3>
+          <p id="display-languages"></p>
+        </div>
+      </div>
+
+      <div class="right-section">
+        <div class="section">
+          <h3><i class="fas fa-user"></i> Profile</h3>
+          <p id="display-profile"></p>
+        </div>
+        <div class="section">
+          <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+          <p id="display-education"></p>
+        </div>
+        <div class="section">
+          <h3><i class="fas fa-briefcase"></i> Work Experience</h3>
+          <p id="display-experience"></p>
+        </div>
+      </div>
+    </div>
+    <div class="buttons">
+        <button id="edit-btn">Edit</button>
+        <button id="download-btn">Download PDF</button>
+        <button id="share-btn">Share Link</button>
+    </div>
+
+    <script>
+        
+      const skillIcons = {
+        html: "fab fa-html5",
+        css: "fab fa-css3-alt",
+        javascript: "fab fa-js",
+        typescript: "fab fa-js-square",
+        react: "fab fa-react",
+        vue: "fab fa-vuejs",
+        angular: "fab fa-angular",
+        bootstrap: "fab fa-bootstrap",
+        nodejs: "fab fa-node",
+        express: "fas fa-server",
+        mongodb: "fas fa-database",
+        mysql: "fas fa-database",
+        git: "fab fa-git-alt",
+        github: "fab fa-github",
+        docker: "fab fa-docker",
+        python: "fab fa-python",
+        java: "fab fa-java",
+        csharp: "fas fa-code",
+        php: "fab fa-php",
+        sass: "fab fa-sass",
+        graphql: "fas fa-project-diagram",
+        firebase: "fas fa-fire",
+        aws: "fab fa-aws",
+        figma: "fab fa-figma",
+        adobe: "fab fa-adobe",
+        photoshop: "fab fa-adobe",
+        nextjs: "fab fa-react",
+        "tailwind css": "fab fa-bootstrap",
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const formData = JSON.parse(localStorage.getItem("formData"));
+
+        if (formData) {
+          document.getElementById("display-name").innerText = formData.name;
+          document.getElementById("display-role").innerText = formData.role;
+          document.getElementById("display-email").innerText = formData.email;
+          document.getElementById("display-phone").innerText = formData.phone;
+          document.getElementById("display-location").innerText =
+            formData.location;
+          document.getElementById("display-profile").innerText =
+            formData.profile;
+          document.getElementById("display-education").innerText =
+            formData.education;
+          document.getElementById("display-experience").innerText =
+            formData.experience;
+          document.getElementById("display-languages").innerText =
+            formData.languages;
+          
+
+          // Load skills
+          const skillsList = document.getElementById("skills-list");
+          formData.skills.split(",").forEach((skill) => {
+            const skillName = skill.trim().toLowerCase();
+            const iconClass = skillIcons[skillName] || "fas fa-check";
+            const li = document.createElement("li");
+            li.innerHTML = `<i class="${iconClass}"></i> <span>${skill.trim()}</span>`;
+            li.addEventListener("click", editSkill);
+            skillsList.appendChild(li);
+          });
+        }
+
+        const toggleSkillsButton = document.getElementById("toggle-skills");
+        const skillsListSection = document.getElementById("skills-list");
+
+        toggleSkillsButton.addEventListener("click", function () {
+          const isHidden = skillsListSection.style.display === "none";
+          skillsListSection.style.display = isHidden ? "block" : "none";
+          toggleSkillsButton.textContent = isHidden
+            ? "Hide Skills"
+            : "Show Skills";
+        });
+      });
+
+      function editSkill(event) {
+        const li = event.currentTarget;
+        const currentSkill = li.querySelector("span").textContent;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = currentSkill;
+        input.classList.add("skill-input");
+
+        li.innerHTML = "";
+        li.appendChild(input);
+
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            const updatedSkill = input.value.trim();
+            li.innerHTML = `<i class="${
+              skillIcons[updatedSkill.toLowerCase()] || "fas fa-check"
+            }"></i> <span>${updatedSkill}</span>`;
+            li.addEventListener("click", editSkill);
+            saveSkills();
+          }
+        });
+
+        input.focus();
+      }
+
+      function saveSkills() {
+        const skillsList = Array.from(
+          document.querySelectorAll("#skills-list li span")
+        ).map((span) => span.textContent);
+
+        // Update skills in local storage
+        const formData = JSON.parse(localStorage.getItem("formData")) || {};
+        formData.skills = skillsList.join(", ");
+        localStorage.setItem("formData", JSON.stringify(formData));
+      }
+
+      function loadImage(event) {
+        const profileImage = document.getElementById("profile-image");
+        profileImage.src = URL.createObjectURL(event.target.files[0]);
+        profileImage.onload = () => URL.revokeObjectURL(profileImage.src);
+      }
+
+      const editBtn = document.getElementById("edit-btn");
+
+      const editableElements = document.querySelectorAll(
+        "#resume-container p, #resume-container li, #display-name, #display-role, #display-email, #display-phone, #display-location, #display-profile, #display-education, #display-experience, #display-languages"
+      );
+
+      let isEditing = false;
+
+      editBtn.addEventListener("click", () => {
+        isEditing = !isEditing;
+
+        editableElements.forEach((element) => {
+          element.contentEditable = isEditing;
+          element.style.border = isEditing ? "1px solid #ddd" : "none";
+        });
+
+        editBtn.textContent = isEditing ? "Stop Editing" : "Edit";
+      });
+      
+      function loadImage(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        const profileImage = document.getElementById("profile-image");
+        profileImage.src = e.target.result; 
+    };
+
+    reader.readAsDataURL(file);
+}
+
+    // Download PDF functionality
+    document.getElementById('download-btn').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const resume = document.getElementById('resume-container');
+
+            html2canvas(resume).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('resume.pdf');
+            });
+        });
+
+        // Share functionality
+        document.getElementById('share-btn').addEventListener('click', function() {
+            const uniqueId = Math.random().toString(36).substring(2, 15);
+            const baseURL = window.location.origin + window.location.pathname;
+            const shareableLink = `${baseURL}?resume=${uniqueId}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Resume',
+                    text: 'Check out my resume!',
+                    url: shareableLink
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(shareableLink).then(() => {
+                    alert('Unique resume link copied to clipboard!');
+                });
+            }
+        });
+    </script>
+
+    <!-- Include html2canvas and jsPDF libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    </script>
+  </body>
+</html>

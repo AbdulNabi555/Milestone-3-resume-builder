@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Builder - Form</title>
+    <link rel="stylesheet" href="2styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Editable Resume Builder</h1>
+      <form id="resume-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="role">Role:</label>
+        <input type="text" id="role" name="role" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="phone">Contact:</label>
+        <input type="tel" id="phone" name="phone" required />
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required />
+
+        <label for="profile">Profile:</label>
+        <textarea id="profile" name="profile" required></textarea>
+
+        <label for="education">Education:</label>
+        <textarea id="education" name="education" required></textarea>
+
+        <label for="skills">Skills (comma-separated):</label>
+        <textarea id="skills" name="skills" required></textarea>
+        <div id="skills-icons" class="skills-icons"></div>
+
+        <label for="experience">Experience:</label>
+        <textarea id="experience" name="experience" required></textarea>
+
+        <label for="languages">Languages Known:</label>
+        <input type="text" id="languages" name="languages" required />
+
+        <button type="button" onclick="saveData()">Generate Resume</button>
+      </form>
+    </div>
+    <script>
+      function saveData() {
+        const formData = {
+          name: document.getElementById("name").value,
+          role: document.getElementById("role").value,
+          email: document.getElementById("email").value,
+          phone: document.getElementById("phone").value,
+          location: document.getElementById("location").value,
+          profile: document.getElementById("profile").value,
+          education: document.getElementById("education").value,
+          skills: document.getElementById("skills").value,
+          experience: document.getElementById("experience").value,
+          languages: document.getElementById("languages").value,
+        };
+
+        localStorage.setItem("formData", JSON.stringify(formData));
+        window.location.href = "resume.html";
+      }
+    </script>
+  </body>
+</html>

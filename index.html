@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Builder</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("image.gif");
+      }
+      .card {
+        background: rgba(24, 38, 79, 0.2);
+        padding: 40px;
+        border-radius: 15px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 0 30px rgb(0, 0, 109), 0 0 60px rgb(4, 38, 139);
+        text-align: center;
+        animation: float 3s ease-in-out infinite;
+        max-width: 90%;
+        color: #fff;
+      }
+      .card h1 {
+        color: rgb(255, 255, 255);
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
+      }
+      .card button {
+        padding: 12px 25px;
+        font-size: 18px;
+        background: transparent;
+        border: 2px solid rgb(255, 255, 255);
+        color: rgb(255, 255, 255);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .card button:hover {
+        background: url("image.gif");
+        color: #ffffff;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Welcome to Your Resume Builder</h1>
+      <a href="2index.html"
+        ><button onclick="startBuilder()">Build Your Resume</button></a
+      >
+    </div>
+  </body>
+</html>
